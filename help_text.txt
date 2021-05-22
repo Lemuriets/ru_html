@@ -1,0 +1,9 @@
+() - required command parameters
+available commands:
+
+help - show all commands
+create (path to file) - create html file by you txt file with ru html code
+clear - clear your console
+q - exit the program
+
+P.S finished files are saved in derictory "finished files". txt templates must be saved in the derictory "txt files"
