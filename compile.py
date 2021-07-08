@@ -9,15 +9,19 @@ class Compile(object):
             self.create_html_file(self.new_filename)
         except AttributeError:
             return None
-        print('успешно')
 
     @staticmethod
-    def get_indexes_str(string: str, symbol: str) -> tuple:
-        if symbol not in string:
-            return ()
+    def get_indexes_substrings(string: str, *substrings) -> dict:
         if not isinstance(string, str):
-            raise TypeError('1-й аргумент строки должен быть строковым объектом')
-        return tuple([i for i in range(len(string)) if string[i] == str(symbol)])
+            raise TypeError('1-й аргумент функции должен быть строковым объектом')
+
+        result = {}
+
+        for index in range(len(string)):
+            if string[index] in substrings:
+                result.setdefault(string[index], []).append(index)
+
+        return result
 
     def parse(self, file_path: str) -> None:
         if not file_path.endswith('.txt'):
@@ -30,8 +34,9 @@ class Compile(object):
             with open(f'txt files/{file_path}', 'r', encoding='utf-8') as txt_file:
                 self.text = ''
                 for string in txt_file:
-                    start_tag = self.get_indexes_str(string, '<')
-                    end_tag = self.get_indexes_str(string, '>')
+                    tag_indexes = self.get_indexes_substrings(string, '<', '>')
+                    start_tag = tag_indexes.get('<')
+                    end_tag = tag_indexes.get('>')
                     all_tags = tuple(zip(start_tag, end_tag))
 
                     new_str = string
@@ -51,5 +56,5 @@ class Compile(object):
     def create_html_file(self, filename: str) -> None:
         if filename is None:
             return None
-        with open(f'finished files/{filename}', 'w', encoding='utf-8') as new:
-            new.write(self.text)
+        with open(f'finished files/{filename}', 'w', encoding='utf-8') as new_file:
+            new_file.write(self.text)
